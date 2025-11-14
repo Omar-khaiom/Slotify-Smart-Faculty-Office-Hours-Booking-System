@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Booking Result</h2>
+{% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+{% if success %}
+  <div class="alert alert-success">{{ success }}</div>
+{% endif %}
+<p><a href="/" class="btn btn-secondary">Home</a></p>
+{% endblock %}

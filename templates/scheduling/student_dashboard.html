@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Student Dashboard</h2>
+<p>Welcome, <strong>{{ user.username }}</strong>!</p>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">📅 Upcoming Bookings</h5>
+        {% if upcoming_bookings %}
+          <ul class="list-group list-group-flush">
+            {% for booking in upcoming_bookings %}
+              <li class="list-group-item">
+                <strong>{{ booking.slot.faculty.username }}</strong><br>
+                {{ booking.slot.start_time|date:"M d, Y g:i A" }} - {{ booking.slot.end_time|date:"g:i A" }}<br>
+                <small class="text-muted">📍 {{ booking.slot.location }}</small>
+              </li>
+            {% endfor %}
+          </ul>
+          <a href="{% url 'student_bookings_list' %}" class="btn btn-sm btn-secondary mt-2">View All Bookings</a>
+        {% else %}
+          <p class="text-muted text-center py-3">
+            No upcoming bookings.<br>
+            <a href="{% url 'faculty_list' %}" class="btn btn-sm btn-outline-primary mt-2">Browse Faculty to Book</a>
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">⚡ Quick Actions</h5>
+        <a href="{% url 'faculty_list' %}" class="btn btn-primary btn-block mb-2 w-100">Browse Faculty</a>
+        <a href="{% url 'student_bookings_list' %}" class="btn btn-outline-secondary btn-block w-100">My Bookings</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

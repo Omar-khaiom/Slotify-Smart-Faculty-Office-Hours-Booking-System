@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+<h2>Faculty Dashboard</h2>
+<p>Welcome, <strong>{{ user.username }}</strong>!</p>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">📅 Upcoming Slots</h5>
+        {% if next_slots %}
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Date & Time</th>
+                <th>Location</th>
+                <th>Bookings</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for slot in next_slots %}
+                <tr>
+                  <td>{{ slot.start_time|date:"M d, Y g:i A" }}</td>
+                  <td>{{ slot.location }}</td>
+                  <td>{{ slot.booked_count }} / {{ slot.max_students }}</td>
+                  <td>
+                    {% if slot.status == 'AVAILABLE' %}
+                      <span class="badge bg-success">{{ slot.status }}</span>
+                    {% else %}
+                      <span class="badge bg-secondary">{{ slot.status }}</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <a href="{% url 'faculty_slots_list' %}" class="btn btn-sm btn-secondary">View All Slots</a>
+        {% else %}
+          <p class="text-muted text-center py-3">
+            No upcoming slots created yet.<br>
+            <a href="{% url 'faculty_slot_create' %}" class="btn btn-sm btn-outline-success mt-2">Create Your First Slot</a>
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">⚡ Quick Actions</h5>
+        <a href="{% url 'faculty_slot_create' %}" class="btn btn-primary btn-block mb-2 w-100">Create New Slot</a>
+        <a href="{% url 'faculty_slots_list' %}" class="btn btn-outline-secondary btn-block w-100">Manage Slots</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

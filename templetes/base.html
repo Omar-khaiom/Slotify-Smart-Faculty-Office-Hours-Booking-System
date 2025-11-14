@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Slotify</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <style>
+      .slot-capacity-wrapper {
+        position: relative;
+        height: 20px;
+      }
+      .slot-capacity-wrapper .progress {
+        height: 100%;
+      }
+      .slot-capacity-bar {
+        width: var(--capacity, 0%);
+        transition: width 0.3s ease;
+      }
+      .slot-capacity-label {
+        pointer-events: none;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #1f1f1f;
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+      <div class="container">
+        <a class="navbar-brand" href="/">Slotify</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            {% if user.is_authenticated %}
+              {% if user.is_student %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'student_dashboard' %}">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'faculty_list' %}">Browse Faculty</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'student_bookings_list' %}">My Bookings</a></li>
+              {% elif user.is_faculty %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'faculty_dashboard' %}">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'faculty_slots_list' %}">My Slots</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'faculty_slot_create' %}">Create Slot</a></li>
+              {% endif %}
+              {% if user.is_staff %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'analytics_dashboard' %}">Analytics</a></li>
+                <li class="nav-item"><a class="nav-link" href="/admin/">Admin</a></li>
+              {% endif %}
+            {% endif %}
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            {% if user.is_authenticated %}
+              <li class="nav-item"><span class="nav-link text-light">{{ user.username }} ({{ user.get_role_display }})</span></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <main class="container">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

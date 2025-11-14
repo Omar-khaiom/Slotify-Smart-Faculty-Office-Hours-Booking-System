@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Faculty Directory</h2>
+<p>Select a faculty member to view and book their available office hour slots.</p>
+
+<div class="mb-3">
+  <input type="text" id="facultySearch" class="form-control" placeholder="Search by name or department...">
+</div>
+
+<table class="table table-striped" id="facultyTable">
+  <thead>
+    <tr><th>Name</th><th>Department</th><th>Action</th></tr>
+  </thead>
+  <tbody>
+    {% for f in faculties %}
+      <tr>
+        <td>{{ f.username }}</td>
+        <td>{{ f.department|default:'-' }}</td>
+        <td><a class="btn btn-sm btn-primary" href="{% url 'faculty_public_slots' f.id %}">View Slots</a></td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="3" class="text-center text-muted">No faculty users yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script>
+document.getElementById('facultySearch').addEventListener('keyup', function() {
+  const filter = this.value.toLowerCase();
+  const rows = document.querySelectorAll('#facultyTable tbody tr');
+  
+  rows.forEach(row => {
+    const name = row.cells[0]?.textContent.toLowerCase() || '';
+    const dept = row.cells[1]?.textContent.toLowerCase() || '';
+    
+    if (name.includes(filter) || dept.includes(filter)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+});
+</script>
+{% endblock %}

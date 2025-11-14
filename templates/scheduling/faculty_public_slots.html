@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block content %}
+<h2>Available Slots for {{ faculty.username }}</h2>
+{% if faculty.department %}
+  <p class="text-muted">Department: {{ faculty.department }}</p>
+{% endif %}
+<table class="table table-bordered">
+  <thead>
+  <tr><th>Date & Time</th><th>End Time</th><th>Location</th><th>Availability</th><th>Action</th></tr>
+  </thead>
+  <tbody>
+  {% for slot in slots %}
+    <tr>
+      <td>{{ slot.start_time|date:"M d, Y g:i A" }}<br><small class="text-muted">({{ slot.start_time|naturaltime }})</small></td>
+      <td>{{ slot.end_time|date:"g:i A" }}</td>
+      <td>{{ slot.location }}</td>
+      <td style="width:220px;">
+        {% if slot.max_students > 0 %}
+          {% with booked=slot.booked_count %}
+            {% widthratio booked slot.max_students 100 as capacity_pct %}
+            <div class="slot-capacity-wrapper">
+              <div class="progress">
+                {% if capacity_pct >= 100 %}
+                  <div class="progress-bar slot-capacity-bar bg-danger" style="--capacity: {{ capacity_pct }}%;"></div>
+                {% elif capacity_pct >= 70 %}
+                  <div class="progress-bar slot-capacity-bar bg-warning text-dark" style="--capacity: {{ capacity_pct }}%;"></div>
+                {% else %}
+                  <div class="progress-bar slot-capacity-bar bg-success" style="--capacity: {{ capacity_pct }}%;"></div>
+                {% endif %}
+              </div>
+              <div class="slot-capacity-label position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                {{ booked }} / {{ slot.max_students }}
+              </div>
+            </div>
+          {% endwith %}
+        {% else %}
+          <span class="text-muted">No capacity set</span>
+        {% endif %}
+      </td>
+      <td>
+        {% with booked=slot.booked_count %}
+          {% if booked < slot.max_students %}
+          <a href="{% url 'book_slot' slot.id %}" class="btn btn-sm btn-primary">Book Now</a>
+          {% else %}
+            <span class="badge bg-danger">Full</span>
+          {% endif %}
+        {% endwith %}
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="5" class="text-center text-muted">No upcoming slots available. Check back later!</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+<p><a href="{% url 'faculty_list' %}" class="btn btn-secondary">Back to Faculty List</a></p>
+{% endblock %}

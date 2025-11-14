@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Create New Slot</h2>
+<div class="row">
+  <div class="col-md-6">
+    <form method="post" class="card card-body">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="mb-3">
+        <label class="form-label">Start Time</label>
+        {{ form.start_time }}
+        <small class="form-text text-muted">Format: YYYY-MM-DD HH:MM (e.g., 2025-11-15 14:00)</small>
+        {{ form.start_time.errors }}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">End Time</label>
+        {{ form.end_time }}
+        <small class="form-text text-muted">Format: YYYY-MM-DD HH:MM (e.g., 2025-11-15 15:00)</small>
+        {{ form.end_time.errors }}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Location</label>
+        {{ form.location }}
+        {{ form.location.errors }}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Max Students</label>
+        {{ form.max_students }}
+        {{ form.max_students.errors }}
+      </div>
+      <button type="submit" class="btn btn-success">Create Slot</button>
+      <a href="{% url 'faculty_slots_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,5 @@
+django>=5.2
+mysqlclient  # For MySQL production database (optional, can use PyMySQL)
+gunicorn  # For production WSGI server
+python-decouple  # For environment variable management (optional)
+pillow  # If adding user profile images later

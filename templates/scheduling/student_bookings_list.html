@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>My Bookings</h2>
+<table class="table table-hover">
+  <thead>
+    <tr><th>Faculty</th><th>Start</th><th>End</th><th>Location</th><th>Status</th><th>Action</th></tr>
+  </thead>
+  <tbody>
+  {% for booking in bookings %}
+    <tr>
+      <td>{{ booking.slot.faculty.username }}</td>
+      <td>{{ booking.slot.start_time|date:"M d, Y g:i A" }}</td>
+      <td>{{ booking.slot.end_time|date:"g:i A" }}</td>
+      <td>{{ booking.slot.location }}</td>
+      <td>
+        {% if booking.status == 'BOOKED' %}
+          <span class="badge bg-success">{{ booking.status }}</span>
+        {% elif booking.status == 'CANCELLED' %}
+          <span class="badge bg-secondary">{{ booking.status }}</span>
+        {% elif booking.status == 'COMPLETED' %}
+          <span class="badge bg-primary">{{ booking.status }}</span>
+        {% else %}
+          <span class="badge bg-warning">{{ booking.status }}</span>
+        {% endif %}
+      </td>
+      <td>
+        {% if booking.status == 'BOOKED' %}
+          <a href="{% url 'cancel_booking' booking.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel</a>
+        {% endif %}
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="6" class="text-center text-muted">No bookings yet. <a href="{% url 'faculty_list' %}">Browse faculty</a> to book your first slot!</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

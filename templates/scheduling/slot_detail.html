@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block content %}
+<h2>Slot Detail</h2>
+<div class="card mb-3">
+  <div class="card-body">
+    <h5 class="card-title">{{ slot.start_time|date:"M d, Y g:i A" }} - {{ slot.end_time|date:"g:i A" }}</h5>
+    <p><strong>Location:</strong> {{ slot.location }}</p>
+    <p><strong>Status:</strong> <span class="badge bg-info">{{ slot.status }}</span></p>
+    {% if slot.max_students > 0 %}
+      {% with booked=slot.booked_count %}
+        <p><strong>Capacity:</strong> {{ booked }} / {{ slot.max_students }}</p>
+        {% widthratio booked slot.max_students 100 as capacity_pct %}
+        <div class="slot-capacity-wrapper mb-3">
+          <div class="progress">
+            {% if capacity_pct >= 100 %}
+              <div class="progress-bar slot-capacity-bar bg-danger" style="--capacity: {{ capacity_pct }}%;"></div>
+            {% elif capacity_pct >= 70 %}
+              <div class="progress-bar slot-capacity-bar bg-warning text-dark" style="--capacity: {{ capacity_pct }}%;"></div>
+            {% else %}
+              <div class="progress-bar slot-capacity-bar bg-success" style="--capacity: {{ capacity_pct }}%;"></div>
+            {% endif %}
+          </div>
+          <div class="slot-capacity-label position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+            {{ booked }} / {{ slot.max_students }}
+          </div>
+        </div>
+      {% endwith %}
+    {% else %}
+      <p><strong>Capacity:</strong> Not configured</p>
+    {% endif %}
+    <p><strong>Relative start:</strong> {{ slot.start_time|naturaltime }}</p>
+  </div>
+</div>
+
+<h5>Bookings</h5>
+<table class="table table-sm">
+  <thead>
+    <tr><th>Student</th><th>Status</th><th>Booked At</th></tr>
+  </thead>
+  <tbody>
+    {% for b in bookings %}
+      <tr>
+        <td>{{ b.student.username }}</td>
+        <td>{{ b.status }}</td>
+        <td>{{ b.created_at|date:"M d, Y g:i A" }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="3" class="text-muted">No bookings yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+<a href="{% url 'faculty_slots_list' %}" class="btn btn-secondary">Back</a>
+{% endblock %}
